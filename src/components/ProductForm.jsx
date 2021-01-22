@@ -1,4 +1,5 @@
 import React from "react";
+
 import {
   Alert,
   Button,
@@ -8,6 +9,7 @@ import {
   Spinner,
   Container,
 } from "react-bootstrap";
+import Products from "./Products";
 
 class ProductForm extends React.Component {
   state = {
@@ -16,7 +18,8 @@ class ProductForm extends React.Component {
       description: "",
       brand: "",
       price: "",
-      dateTime: "",
+      imageurl: null,
+
       category: "",
     },
     errMessage: "",
@@ -26,8 +29,11 @@ class ProductForm extends React.Component {
   updatePost = (e) => {
     let product = { ...this.state.product };
     let currentId = e.currentTarget.id;
-
-    product[currentId] = e.currentTarget.value;
+    if (currentId === "imageurl") {
+      product[currentId] = e.currentTarget.files[0];
+    } else {
+      product[currentId] = e.currentTarget.value;
+    }
 
     this.setState({ product: product });
   };
@@ -36,11 +42,13 @@ class ProductForm extends React.Component {
     e.preventDefault();
     this.setState({ loading: true });
     try {
-      let response = await fetch("http://localhost:3001/products", {
+      console.log(this.state.product);
+      let response = await fetch("http://localhost:5000/api/product", {
         method: "POST",
         body: JSON.stringify(this.state.product),
         headers: new Headers({
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
+          Accept: "application/json",
         }),
       });
       console.log(response, "ffffffffff");
@@ -52,7 +60,7 @@ class ProductForm extends React.Component {
             description: "",
             brand: "",
             price: "",
-            dateTime: "",
+
             category: "",
           },
           errMessage: "",
@@ -136,16 +144,14 @@ class ProductForm extends React.Component {
 
               <Col md={6}>
                 <Form.Group>
-                  <Form.Label htmlFor="dateTime">Date and Time</Form.Label>
+                  <Form.Label htmlFor="category">Category</Form.Label>
                   <Form.Control
-                    type="datetime-local"
-                    name="dateTime"
-                    id="dateTime"
-                    placeholder="Date and Time"
-                    value={this.state.product.dateTime}
+                    type="text"
+                    name="category"
+                    id="category"
+                    value={this.state.product.category}
                     onChange={this.updatePost}
-                    required
-                  />
+                  ></Form.Control>
                 </Form.Group>
               </Col>
             </Row>
@@ -163,10 +169,24 @@ class ProductForm extends React.Component {
                   />
                 </Form.Group>
               </Col>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label htmlFor="imageurl">imageurl</Form.Label>
+                  <Form.Control
+                    type="file"
+                    name="imageurl"
+                    id="imageurl"
+                    placeholder="imageurl"
+                    //value={this.state.product.imageurl}
+                    onChange={this.updatePost}
+                  />
+                </Form.Group>
+              </Col>
             </Row>
             <Button type="submit">Submit</Button>
           </Form>
         </div>
+        <Products />
       </Container>
     );
   }

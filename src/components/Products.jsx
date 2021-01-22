@@ -12,9 +12,10 @@ class Products extends React.Component {
   //lifecycle method that is going to be triggered just once after initial loading
   componentDidMount = async () => {
     try {
-      let response = await fetch("http://localhost:3001/products");
+      let response = await fetch("http://localhost:5000/api/product");
       let products = await response.json();
       this.setState({ products: products, loading: false });
+      console.log(products);
     } catch (e) {
       console.log("error happened", e);
       this.setState({ loading: false });
@@ -38,7 +39,8 @@ class Products extends React.Component {
             <ListGroup key={index}>
               <ListGroup.Item>
                 Name: {product.name}-- Brand {product.brand}-- Date:
-                {product.dateTime}
+                {product.price}--Image
+                <img style={{ width: "100px" }} src={product.imageurl}></img>
               </ListGroup.Item>
             </ListGroup>
           ))}

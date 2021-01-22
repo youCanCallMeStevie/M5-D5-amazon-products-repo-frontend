@@ -4,15 +4,20 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import NavBar from "./components/NavBar";
 import ProductForm from "./components/ProductForm";
-import Products from "./components/Products";
+
+import Carts from "./components/Carts";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
 class App extends React.Component {
   render() {
     return (
       <>
-        <NavBar />
-        <ProductForm />
-        <Products />
+        <Router>
+          <NavBar />
+          <Route path="/" component={ProductForm} exact />
+
+          <Route path="/carts" component={Carts} exact />
+        </Router>
       </>
     );
   }
